@@ -1,4 +1,9 @@
-variable "vpn_endpoint_keyname" {
+variable "region" {
+  type        = string
+  default     = "eu-west-1"
+  description = "AWS region (eg. eu-west-1)"
+}
+variable "green_vpn_inst_keyname" {
   type        = string
   default     = ""
   description = "(Optional) Specify a key name of the Key Pair to use for the vpn endpoint instance in the green side. If not specified, this module will create a new key."
@@ -39,14 +44,9 @@ variable "green_vpn_endpoint_instancetype" {
   description = "(Optional) VPN endpoints are EC2 ubuntu instances that terminates IPSEC tunnel. t3a.micro is suitable for connectivity tests but if you have performance requirements make sure that you select a proper instance type."
 }
 
-variable "allowed_networks_ssh" {
+variable "green_vpn_inst_allowed_networks_ssh" {
   type        = list(any)
   default     = []
   description = "(Optional) Allowed IP/networks to ssh VPN instance (green). Eg. single address [1.1.1.1/32] or multple addresses or networks [1.1.1.1/32, 2.2.2.2/32]"
 }
 
-variable "green_additonal_prefixes_advertise" {
-  type        = list(any)
-  default     = []
-  description = "(Optional) Green subnets are automatically advertised. In addition to those them, you can advertise other sunets by adding their CIDR to this list."
-}

@@ -22,6 +22,9 @@ module "blue_vpc" {
   enable_vpn_gateway = true
   amazon_side_asn    = var.blue_asn
 
+  propagate_private_route_tables_vgw = true
+  propagate_public_route_tables_vgw  = true
+
   customer_gateways = {
     IP1 = {
       bgp_asn    = var.green_asn
