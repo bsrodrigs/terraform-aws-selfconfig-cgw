@@ -13,21 +13,24 @@
 # $10 TUNNEL1_PRESHARED_KEY 
 # $11 TUNNEL2_PRESHARED_KEY 
 # $12 GREEN_NETWORKS 
-# $13 GIT_REPO
+# $13 GIT_REPO 
 
 # Local variables
-GIT_REPO='bsrodrigs/terraform-aws-fullyconnectedvpn'
+GIT_REPO='bsrodrigs/terraform-aws-fullyconnectedvpn/alpha'
 
-echo "${12}" >> test.txt
 # Instance Config
 sudo hostnamectl set-hostname vpn-endpoint-1
 sudo apt update
 sudo apt install -y strongswan quagga ntp tcpdump telnet
 
+# Re-type escaped backslash
+
+sudo sed -i 's/BACKSLASH/\//g' /etc/quagga/bgpd.conf.tpl # Backslash recovery
+
 # StringSwan Config (IPSec)
-sudo wget https://raw.githubusercontent.com/$GIT_REPO/main/tpl/ipsec.conf.tpl -P /etc/ipsec.d/
-sudo wget https://raw.githubusercontent.com/$GIT_REPO/main/src/aws-updown.sh -P /etc/ipsec.d/
-sudo wget https://raw.githubusercontent.com/$GIT_REPO/main/tpl/ipsec.secrets.tpl -P /etc/ipsec.d/ 
+sudo wget https://raw.githubusercontent.com/$GIT_REPO/tpl/ipsec.conf.tpl -P /etc/ipsec.d/
+sudo wget https://raw.githubusercontent.com/$GIT_REPO/src/aws-updown.sh -P /etc/ipsec.d/
+sudo wget https://raw.githubusercontent.com/$GIT_REPO/tpl/ipsec.secrets.tpl -P /etc/ipsec.d/ 
 sudo chmod +x /etc/ipsec.d/aws-updown.sh
 sudo chown ubuntu:ubuntu /etc/ipsec/aws-updown.sh
 # Replace params in ipsec.conf
@@ -54,8 +57,8 @@ sudo mv -f /etc/ipsec.secrets.tpl /etc/ipsec.secrets
 
 sudo cp /usr/share/doc/quagga-core/examples/vtysh.conf.sample /etc/quagga/vtysh.conf
 sudo cp /usr/share/doc/quagga-core/examples/zebra.conf.sample /etc/quagga/zebra.conf
-sudo wget https://raw.githubusercontent.com/$GIT_REPO/main/tpl/bgpd.conf.tpl -P /etc/quagga/
-sudo wget https://raw.githubusercontent.com/$GIT_REPO/main/src/config-conn.sh -P /home/ubuntu/
+sudo wget https://raw.githubusercontent.com/$GIT_REPO/tpl/bgpd.conf.tpl -P /etc/quagga/
+sudo wget https://raw.githubusercontent.com/$GIT_REPO/src/config-conn.sh -P /home/ubuntu/
 sudo chown quagga:quagga /etc/quagga/vtysh.conf
 sudo chown quagga:quagga /etc/quagga/zebra.conf
 sudo chown quagga:quagga /etc/quagga/bgpd.conf
@@ -69,7 +72,7 @@ sudo sed -i 's/BLUE_ASN/'$1'/g' /etc/quagga/bgpd.conf.tpl
 sudo sed -i 's/BLUE_INSIDE_IP1/'$4'/g' /etc/quagga/bgpd.conf.tpl
 sudo sed -i 's/BLUE_INSIDE_IP2/'$5'/g' /etc/quagga/bgpd.conf.tpl
 sudo sed -i 's/GREEN_OUTSIDE_IP1/'$7'/g' /etc/quagga/bgpd.conf.tpl
-sudo sed -i 's/GREEN_NETWORKS/'"${12}"'/g' /etc/quagga/bgpd.conf.tpl # GREEN_NETWORKS have backslash escaped to avoid sed error
+sudo sed -i 's/GREEN_NETWORKS/'"${12}"'/g' /etc/quagga/bgpd.conf.tpl# GREEN_NETWORKS have backslash escaped to avoid sed error
 sudo sed -i 's/BACKSLASH/\//g' /etc/quagga/bgpd.conf.tpl # Backslash recovery
 sudo cp /etc/quagga/bgpd.conf.tpl /etc/quagga/bgpd.conf
 

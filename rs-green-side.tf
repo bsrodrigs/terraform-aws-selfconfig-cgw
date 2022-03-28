@@ -82,7 +82,7 @@ resource "aws_instance" "green_vpn_inst" {
 
   user_data = <<EOF
 #!/bin/bash
-wget https://raw.githubusercontent.com/bsrodrigs/terraform-aws-fullyconnectedvpn/main/src/config-conn.sh -P /home/ubuntu/
+wget https://raw.githubusercontent.com/${local.git_repo}/src/config-conn.sh -P /home/ubuntu/
 chown ubuntu /home/ubuntu/config-conn.sh 
 chmod +x /home/ubuntu/config-conn.sh 
 /home/ubuntu/config-conn.sh ${local.p1} ${local.p2} ${local.p3} ${local.p4} ${local.p5} ${local.p6} ${local.p7} ${local.p8} ${local.p9} ${local.p10} ${local.p11} "${local.p12}" "${local.p13}"
