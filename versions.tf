@@ -1,7 +1,7 @@
 terraform {
   required_providers {
     tls = {
-      source  = "hashicorp/random"
+      source  = "hashicorp/tls"
       version = "3.1.0"
     }
 
