@@ -23,10 +23,6 @@ sudo hostnamectl set-hostname vpn-endpoint-1
 sudo apt update
 sudo apt install -y strongswan quagga ntp tcpdump telnet
 
-# Re-type escaped backslash
-
-sudo sed -i 's/BACKSLASH/\//g' /etc/quagga/bgpd.conf.tpl # Backslash recovery
-
 # StringSwan Config (IPSec)
 sudo wget https://raw.githubusercontent.com/$GIT_REPO/tpl/ipsec.conf.tpl -P /etc/ipsec.d/
 sudo wget https://raw.githubusercontent.com/$GIT_REPO/src/aws-updown.sh -P /etc/ipsec.d/
