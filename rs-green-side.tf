@@ -175,9 +175,9 @@ resource "aws_security_group" "green_vpn_inst_green_traffic" {
   vpc_id      = module.green_vpc.vpc_id
   ingress {
     description = "Allow SSH from specified networks for management"
-    from_port   = -1
-    to_port     = -1
-    protocol    = "tcp"
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
     cidr_blocks = [module.green_vpc.vpc_cidr_block]
   }
   egress {
