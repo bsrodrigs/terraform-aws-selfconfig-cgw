@@ -90,7 +90,7 @@ EOF
 
 
   tags = {
-    Name    = "vpn-endpoint-1"
+    Name    = "vpn-instance-1"
     project = var.project_label
     color   = "green"
   }
@@ -168,6 +168,31 @@ resource "aws_security_group" "green_vpn_inst_ssh" {
   }
 }
 
+
+resource "aws_security_group" "green_vpn_inst_green_traffic" {
+  name        = "vpn_inst_greentraffic"
+  description = "Allow GREEN VPC Traffic to cross VPN instance"
+  vpc_id      = module.green_vpc.vpc_id
+  ingress {
+    description = "Allow SSH from specified networks for management"
+    from_port   = -1
+    to_port     = -1
+    protocol    = "tcp"
+    cidr_blocks = module.green_vpc.vpc_cidr_block
+  }
+  egress {
+    description = "Allow all outbound traffic"
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+  tags = {
+    Name    = "vpn_endpoint"
+    project = var.project_label
+    color   = "green"
+  }
+}
 # Generate a SSH key pair
 resource "tls_private_key" "green_vpn_inst" {
   count     = var.vpn_endpoint_keyname == "" ? 1 : 0
