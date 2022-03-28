@@ -16,8 +16,8 @@
 # $13 GIT_REPO 
 
 # Local variables
-GIT_REPO='bsrodrigs/terraform-aws-fullyconnectedvpn/alpha'
-
+#GIT_REPO='bsrodrigs/terraform-aws-fullyconnectedvpn/alpha'
+GIT_REPO=${13}
 # Instance Config
 sudo hostnamectl set-hostname vpn-endpoint-1
 sudo apt update
