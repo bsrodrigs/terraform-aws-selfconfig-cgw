@@ -68,7 +68,7 @@ sudo sed -i 's/BLUE_ASN/'$1'/g' /etc/quagga/bgpd.conf.tpl
 sudo sed -i 's/BLUE_INSIDE_IP1/'$4'/g' /etc/quagga/bgpd.conf.tpl
 sudo sed -i 's/BLUE_INSIDE_IP2/'$5'/g' /etc/quagga/bgpd.conf.tpl
 sudo sed -i 's/GREEN_OUTSIDE_IP1/'$7'/g' /etc/quagga/bgpd.conf.tpl
-sudo sed -i 's/GREEN_NETWORKS/'"${12}"'/g' /etc/quagga/bgpd.conf.tpl# GREEN_NETWORKS have backslash escaped to avoid sed error
+sudo sed -i 's/GREEN_NETWORKS/'"${12}"'/g' /etc/quagga/bgpd.conf.tpl # GREEN_NETWORKS have backslash escaped to avoid sed error
 sudo sed -i 's/BACKSLASH/\//g' /etc/quagga/bgpd.conf.tpl # Backslash recovery
 sudo cp /etc/quagga/bgpd.conf.tpl /etc/quagga/bgpd.conf
 
