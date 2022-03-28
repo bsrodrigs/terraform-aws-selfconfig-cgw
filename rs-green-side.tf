@@ -178,7 +178,7 @@ resource "aws_security_group" "green_vpn_inst_green_traffic" {
     from_port   = -1
     to_port     = -1
     protocol    = "tcp"
-    cidr_blocks = module.green_vpc.vpc_cidr_block
+    cidr_blocks = [module.green_vpc.vpc_cidr_block]
   }
   egress {
     description = "Allow all outbound traffic"
