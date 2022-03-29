@@ -25,7 +25,7 @@ locals {
   # $12 GREEN_PREFIXES  (DO NOT CHANGE)
   p12 = replace(module.green_vpc.vpc_cidr_block, "/", "BACKSLASH")
 # Git repo
-  p13 = "bsrodrigs/terraform-aws-fullyconnectedvpn/alpha"
+  p13 = "bsrodrigs/terraform-aws-fullyconnectedvpn/main"
   #p13 = replace(local.git_repo, "/", "BACKSLASH")
 
   #Auxiliar variables
