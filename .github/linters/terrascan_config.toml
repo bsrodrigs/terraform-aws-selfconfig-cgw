@@ -1,4 +1,5 @@
 [rules]
     skip-rules = [
-        "AC_AWS_0369"
+        "AC_AWS_0369",
+        "AC-AWS-NS-IN-M-1172"
     ]

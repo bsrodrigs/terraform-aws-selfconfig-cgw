@@ -1,11 +1,12 @@
-# KICS - skiped queries 
+# KICS - skiped queries - https://docs.kics.io/latest/queries/all-queries/
 # - VPC Subnet Assigns Public IP
 # - VPC FlowLogs Disabled
 # - IAM Access Analyzer Undefined
 # - Shield Advanced Not In Use
 # - EC2 Instance Using API Keys
 # - EC2 Instance Has Public IP
-# kics-scan disable=52f04a44-6bfa-4c41-b1d3-4ae99a2de05c,f83121ea-03da-434f-9277-9cd247ab3047,e592a0c5-5bdb-414c-9066-5dba7cdea370,084c6686-2a70-4710-91b1-000393e54c12,0b93729a-d882-4803-bdc3-ac429a21f158,5a2486aa-facf-477d-a5c1-b010789459ce
+# - Security Group Not Used
+# kics-scan disable=52f04a44-6bfa-4c41-b1d3-4ae99a2de05c,f83121ea-03da-434f-9277-9cd247ab3047,e592a0c5-5bdb-414c-9066-5dba7cdea370,084c6686-2a70-4710-91b1-000393e54c12,0b93729a-d882-4803-bdc3-ac429a21f158,5a2486aa-facf-477d-a5c1-b010789459ce,4849211b-ac39-479e-ae78-5694d506cb24
 module "green_vpc" {
 
   source  = "terraform-aws-modules/vpc/aws"
@@ -68,7 +69,7 @@ resource "aws_instance" "green_vpn_inst" {
 
   ami                       = data.aws_ami.green_vpn_inst_ubuntu.id
   instance_type             = var.green_vpn_endpoint_instancetype
-  vpc_security_group_ids    = length(var.allowed_networks_ssh) > 0 ? [aws_security_group.green_vpn_inst_ipsec.id, aws_security_group.green_vpn_inst_green_traffic.id, aws_security_group.green_vpn_inst_ssh.id] : [aws_security_group.green_vpn_inst_ipsec.id, aws_security_group.green_vpn_inst_green_traffic.id, ]
+  vpc_security_group_ids    = length(var.allowed_networks_ssh) > 0 ? [aws_security_group.green_vpn_inst_ipsec.id, aws_security_group.green_vpn_inst_green_traffic.id, aws_security_group.green_vpn_inst_ssh.id] : [aws_security_group.green_vpn_inst_ipsec.id, aws_security_group.green_vpn_inst_green_traffic.id ]
   subnet_id                 = module.green_vpc.public_subnets[0]
   key_name                  = var.green_vpn_inst_keyname  == "" ? aws_key_pair.green_vpn_inst[0].key_name : var.green_vpn_inst_keyname
   source_dest_check         = "false"
