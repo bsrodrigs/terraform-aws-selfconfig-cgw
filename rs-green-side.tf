@@ -66,11 +66,11 @@ resource "aws_instance" "green_vpn_inst" {
 
   #checkov:skip=CKV_AWS_79:Instance endpoint cannot be disabled for ssh to work properly
 
-  ami                       = data.aws_ami.vpn_inst_ubuntu.id
+  ami                       = data.aws_ami.green_vpn_inst_ubuntu.id
   instance_type             = var.green_vpn_endpoint_instancetype
   vpc_security_group_ids    = length(var.allowed_networks_ssh) > 0 ? [aws_security_group.green_vpn_inst_ipsec.id, aws_security_group.green_vpn_inst_green_traffic.id, aws_security_group.green_vpn_inst_ssh.id] : [aws_security_group.green_vpn_inst_ipsec.id, aws_security_group.green_vpn_inst_green_traffic.id, ]
   subnet_id                 = module.green_vpc.public_subnets[0]
-  key_name                  = var.vpn_endpoint_keyname  == "" ? aws_key_pair.green_vpn_inst[0].key_name : var.vpn_endpoint_keyname
+  key_name                  = var.green_vpn_inst_keyname  == "" ? aws_key_pair.green_vpn_inst[0].key_name : var.green_vpn_inst_keyname
   source_dest_check         = "false"
   monitoring                  = true
   ebs_optimized               = true
@@ -152,7 +152,7 @@ resource "aws_security_group" "green_vpn_inst_ssh" {
     from_port   = 22
     to_port     = 22
     protocol    = "tcp"
-    cidr_blocks = var.allowed_networks_ssh
+    cidr_blocks = var.green_vpn_inst_allowed_networks_ssh
   }
   egress {
     description = "Allow all outbound traffic"
