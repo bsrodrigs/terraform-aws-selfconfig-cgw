@@ -19,7 +19,7 @@ This setup is divided in two logical sides, the blue side which is where your AW
 Before deploy this module make sure you are authenticated in your AWS account [docs](https://registry.terraform.io/providers/hashicorp/aws/latest/docs#authentication-and-configuration).
 ### Basic setup 
 A fully functional VPN connection (no input variables needed)
-```
+```HCL
 module "my_vpn_setup" {
     source  = "aws-terraform-fullyconnectedvpn"
     version = "1.0.0"
