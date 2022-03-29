@@ -1,3 +1,8 @@
+variable "region" {
+  type        = string
+  default     = "eu-west-1"
+  description = "AWS region (eg. eu-west-1)"
+} 
 variable "vpn_endpoint_keyname" {
   type        = string
   default     = ""

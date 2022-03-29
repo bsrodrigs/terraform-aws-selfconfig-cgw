@@ -1,8 +1,17 @@
 # A fully connected AWS site-to-site VPN with BGP
+This module should be used to test over a fully connected VPN between two VPCs
 
+If you need to test a site-to-site VPN you'll need to a Customer gateway where your IPSec tunnel will end up, in addition to that, if you need to have advertise your prefixes dynamically you'll also need a platform that runs BGP. You can find several platforms in AWS Marketplace that but you may not be familiar with their configuration and you certainly have a learning curve. This module you help those who need a VPN connection up and running for testing purposes.
+
+This module setup all the resources you need to have a site-to-site VPN running and it also configure IPsec tunnel and BGP neighboors for you. 
 ## Table of contents
 
 ### Features
+- A fully configured AWS Site-to-site VPN with dynamic routing 
+- Can be used as a standalone project or integrated with your own resources  
+- Configurable IPSec tunnel
+- Dynamic route propagation with BGP 
+- 
 
 ### Usage
 ``
@@ -10,8 +19,7 @@
 ### VPN EC2 instance gateway
 ## Teste
 
-<!--- BEGIN_TF_DOCS --->
-<!--- END_TF_DOCS --->
+
 <!-- BEGIN_TF_DOCS -->
 ## Requirements
 
