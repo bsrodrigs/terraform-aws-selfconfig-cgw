@@ -195,12 +195,12 @@ resource "aws_security_group" "green_vpn_inst_green_traffic" {
 }
 # Generate a SSH key pair
 resource "tls_private_key" "green_vpn_inst" {
-  count     = var.vpn_endpoint_keyname == "" ? 1 : 0
+  count     = var.green_vpn_inst_keyname == "" ? 1 : 0
   algorithm = "RSA"
 }
 
 resource "aws_key_pair" "green_vpn_inst" {
-  count      = var.vpn_endpoint_keyname == "" ? 1 : 0
+  count      = var.green_vpn_inst_keyname == "" ? 1 : 0
   key_name   = "vpn-inst-key"
   public_key = tls_private_key.green_vpn_inst[0].public_key_openssh
 
@@ -211,7 +211,7 @@ resource "aws_key_pair" "green_vpn_inst" {
 }
 
 resource "aws_ssm_parameter" "green_vpn_inst" {
-  count = var.vpn_endpoint_keyname == "" ? 1 : 0
+  count = var.green_vpn_inst_keyname == "" ? 1 : 0
   name  = "vpn_endpoint_private_key"
   type  = "SecureString"
   value = tls_private_key.green_vpn_inst[0].private_key_pem
