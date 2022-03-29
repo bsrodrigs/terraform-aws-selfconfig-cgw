@@ -146,7 +146,7 @@ resource "aws_security_group" "green_vpn_inst_ipsec" {
 
 resource "aws_security_group" "green_vpn_inst_ssh" {
 
-  count       = var.green_vpn_inst_allowed_networks_ssh > 0 ? 1 : 0 
+  count = var.green_vpn_inst_allowed_networks_ssh > 0 ? 1 : 0
 
   name        = "vpn_inst_ssh"
   description = "Allow SSH from specified networks for management"
