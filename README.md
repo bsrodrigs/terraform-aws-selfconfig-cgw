@@ -1,23 +1,32 @@
 # A fully connected AWS site-to-site VPN with BGP
-This module should be used to test over a fully connected VPN between two VPCs
 
-If you need to test a site-to-site VPN you'll need to a Customer gateway where your IPSec tunnel will end up, in addition to that, if you need to have advertise your prefixes dynamically you'll also need a platform that runs BGP. You can find several platforms in AWS Marketplace that but you may not be familiar with their configuration and you certainly have a learning curve. This module you help those who need a VPN connection up and running for testing purposes.
+This module deploys all the resources needed for a fully functional AWS site-to-site connection, a service that connects privately your VPC to your remote networks. This is a common setup to connect your VPC to other cloud providers (Azure, Google Cloud, Oracle Cloud, ...) or to your self-hosted networks (home network, small business network, or a Data Center).
 
-This module setup all the resources you need to have a site-to-site VPN running and it also configure IPsec tunnel and BGP neighboors for you. 
-## Table of contents
+## Features
+- A fully functional AWS site-to-site VPN connection 
+- A Customer Gateway (CGW) deployed in a EC2 instance, with IPSec and BGP protocols configured automatically.
+- Licensed software is not used, you only pay for the AWS resources used.
 
-### Features
-- A fully configured AWS Site-to-site VPN with dynamic routing 
-- Can be used as a standalone project or integrated with your own resources  
-- Configurable IPSec tunnel
-- Dynamic route propagation with BGP 
-- 
 
-### Usage
-``
+## Architecture
+This setup is divided in two logical sides, the blue side which is where your AWS resources are and a green side, with your external infrastructure, which will be represented here with a different VPC but it could be any infrastrucutre running the same software.
 
-### VPN EC2 instance gateway
-## Teste
+![Base configuration](img/vpnconnected.png)
+
+
+## Usage
+
+Before deploy this module make sure you are authenticated in your AWS account [docs](https://registry.terraform.io/providers/hashicorp/aws/latest/docs#authentication-and-configuration).
+### Basic setup 
+A fully functional VPN connection (no input variables needed)
+```
+module "my_vpn_setup" {
+    source  = "aws-terraform-fullyconnectedvpn"
+    version = "1.0.0"
+
+    # insert the 9 optional variables
+}
+```
 
 
 <!-- BEGIN_TF_DOCS -->
