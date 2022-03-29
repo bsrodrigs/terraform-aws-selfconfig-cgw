@@ -23,7 +23,7 @@ module "blue_vpc" {
   amazon_side_asn    = var.blue_asn
 
   propagate_private_route_tables_vgw = true
-  propagate_public_route_tables_vgw = true
+  propagate_public_route_tables_vgw  = true
 
   customer_gateways = {
     IP1 = {

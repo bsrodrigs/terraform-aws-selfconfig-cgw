@@ -2,7 +2,7 @@ variable "region" {
   type        = string
   default     = "eu-west-1"
   description = "AWS region (eg. eu-west-1)"
-} 
+}
 variable "green_vpn_inst_keyname" {
   type        = string
   default     = ""
