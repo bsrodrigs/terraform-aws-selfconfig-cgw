@@ -1,6 +1,6 @@
 
 # Retrive Ubuntu 20.04 LTS ami id from any region
-data "aws_ami" "vpn_inst_ubuntu" {
+data "aws_ami" "green_vpn_inst_ubuntu" {
   most_recent = true
 
   filter {

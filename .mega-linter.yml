@@ -18,6 +18,8 @@ ENABLE: # If you use ENABLE variable, all other languages/formats/tooling-format
 #DISABLE:
 #  - COPYPASTE # Uncomment to disable checks of excessive copy-pastes
 #  - SPELL # Uncomment to disable checks of spelling mistakes
+DISABLE_LINTERS:
+  - MARKDOWN_MARKDOWN_LINK_CHECK
 SHOW_ELAPSED_TIME: true
 FILEIO_REPORTER: true
 

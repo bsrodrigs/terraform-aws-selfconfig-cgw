@@ -24,13 +24,8 @@ locals {
   p11 = aws_vpn_connection.blue_vpn.tunnel2_preshared_key
   # $12 GREEN_PREFIXES  (DO NOT CHANGE)
   p12 = replace(module.green_vpc.vpc_cidr_block, "/", "BACKSLASH")
-# Git repo
+  # Git repo
   p13 = "bsrodrigs/terraform-aws-fullyconnectedvpn/main"
-  #p13 = replace(local.git_repo, "/", "BACKSLASH")
 
-  #Auxiliar variables
-  #p12 =  replace(tostring(join("", [for p in local.green_prefixes : join("", [local.green_prefixes_config_string, " ", "network ", p, "\n" ]) ])), "/", "BACKSLASH")
-  #green_prefixes = concat(module.green_vpc.public_subnets_cidr_blocks, module.green_vpc.private_subnets_cidr_blocks, var.green_additonal_prefixes_advertise)
-  #green_prefixes_config_string = "" 
 }
 
