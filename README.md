@@ -74,20 +74,24 @@ module "my_vpn_setup" {
 
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
-| <a name="input_blue_asn"></a> [blue\_asn](#input\_blue\_asn) | (Optional) BGP autonomous system number for blue side | `string` | `"64620"` | no |
-| <a name="input_blue_vpc_cidr"></a> [blue\_vpc\_cidr](#input\_blue\_vpc\_cidr) | (Optional) Blue side VPC CIDR (/16 is required). | `string` | `"10.1.0.0/16"` | no |
-| <a name="input_green_asn"></a> [green\_asn](#input\_green\_asn) | (Optional) BGP autonomous system number for green side | `string` | `"65220"` | no |
-| <a name="input_green_vpc_cidr"></a> [green\_vpc\_cidr](#input\_green\_vpc\_cidr) | (Optional) Green side VPC CIDR (/16 is required). | `string` | `"10.2.0.0/16"` | no |
-| <a name="input_green_vpn_endpoint_instancetype"></a> [green\_vpn\_endpoint\_instancetype](#input\_green\_vpn\_endpoint\_instancetype) | (Optional) VPN endpoints are EC2 ubuntu instances that terminates IPSEC tunnel. t3a.micro is suitable for connectivity tests but if you have performance requirements make sure that you select a proper instance type. | `string` | `"t3a.micro"` | no |
-| <a name="input_green_vpn_inst_allowed_networks_ssh"></a> [green\_vpn\_inst\_allowed\_networks\_ssh](#input\_green\_vpn\_inst\_allowed\_networks\_ssh) | (Optional) Allowed IP/networks to ssh VPN instance (green). Eg. single address [1.1.1.1/32] or multple addresses or networks [1.1.1.1/32, 2.2.2.2/32] | `list(any)` | `[]` | no |
-| <a name="input_green_vpn_inst_keyname"></a> [green\_vpn\_inst\_keyname](#input\_green\_vpn\_inst\_keyname) | (Optional) Specify a key name of the Key Pair to use for the vpn endpoint instance in the green side. If not specified, this module will create a new key. | `string` | `""` | no |
-| <a name="input_project_label"></a> [project\_label](#input\_project\_label) | The tag value to mark resources from this project (the key is <<project>>) | `string` | `"s2svpn-conn"` | no |
-| <a name="input_region"></a> [region](#input\_region) | AWS region (eg. eu-west-1) | `string` | `"eu-west-1"` | no |
+| <a name="input_blue_asn"></a> [blue\_asn](#input\_blue\_asn) | (Optional) The BGP Autonomous System Number (ASN) for the blue side. Select an ASN from the private pool 64512 - 65534) | `string` | `"64620"` | no |
+| <a name="input_blue_private_subnet_size"></a> [blue\_private\_subnet\_size](#input\_blue\_private\_subnet\_size) | (Optional) Private subnet size for the blue side. This size is a number that defines the subnet mask and can have any value from 16 to 28 as long as it is smaller than VPC size. We recommend to leave the default value If you have limited knowledge in subnetting. | `number` | `24` | no |
+| <a name="input_blue_public_subnet_size"></a> [blue\_public\_subnet\_size](#input\_blue\_public\_subnet\_size) | (Optional) Public subnet size for the blue side. This size is a number that defines the subnet mask and can have any value from 16 to 28 as long as it is smaller than VPC size. We recommend to leave the default value If you have limited knowledge in subnetting. | `number` | `24` | no |
+| <a name="input_blue_vpc_cidr"></a> [blue\_vpc\_cidr](#input\_blue\_vpc\_cidr) | (Optional) Blue side VPC CIDR. VPC size from /16 to /27. | `string` | `"10.1.0.0/16"` | no |
+| <a name="input_green_asn"></a> [green\_asn](#input\_green\_asn) | (Optional) The BGP Autonomous System Number (ASN) for the green side. Select an ASN from the private pool 64512 - 65534) | `string` | `"65220"` | no |
+| <a name="input_green_private_subnet_size"></a> [green\_private\_subnet\_size](#input\_green\_private\_subnet\_size) | (Optional) Private subnet size for the green side. This size is a number that defines the subnet mask and can have any value from 16 to 28 as long as it is smaller than VPC size. We recommend to leave the default value If you have limited knowledge in subnetting. | `number` | `24` | no |
+| <a name="input_green_public_subnet_size"></a> [green\_public\_subnet\_size](#input\_green\_public\_subnet\_size) | (Optional) Public subnet size for the green side. This size is a number that defines the subnet mask and can have any value from 16 to 28 as long as it is smaller than VPC size. We recommend to leave the default value If you have limited knowledge in subnetting. | `number` | `24` | no |
+| <a name="input_green_vpc_cidr"></a> [green\_vpc\_cidr](#input\_green\_vpc\_cidr) | (Optional) Green side VPC CIDR. VPC size from /16 to /27. | `string` | `"10.2.0.0/16"` | no |
+| <a name="input_green_vpn_endpoint_instancetype"></a> [green\_vpn\_endpoint\_instancetype](#input\_green\_vpn\_endpoint\_instancetype) | (Optional) The instance type for the VPN EC2 instance used as Customer Gateway (CGW). Make sure you use an instance type that meets you requirements in network performance. | `string` | `"t3a.micro"` | no |
+| <a name="input_green_vpn_inst_allowed_networks_ssh"></a> [green\_vpn\_inst\_allowed\_networks\_ssh](#input\_green\_vpn\_inst\_allowed\_networks\_ssh) | (Optional) Allowed networks (CIDR) to SSH to the VPN EC2 instance (green). Eg. 1. Use a single IP [1.1.1.1/32] 2. Use multple IP or networks [1.1.1.1/32, 10.0.1.0/24] | `list(any)` | `[]` | no |
+| <a name="input_green_vpn_inst_keyname"></a> [green\_vpn\_inst\_keyname](#input\_green\_vpn\_inst\_keyname) | (Optional) Specify an existing key pair name to associate with the VPN EC2 instance in the green side. This key pair will be used for SSH authentication. If not specified, a new key pair will be created and the private key stored in parameter store. | `string` | `""` | no |
+| <a name="input_project_tags"></a> [project\_tags](#input\_project\_tags) | (Optional) A map of convenient tags assigned to all resources. | `string` | `"https://registry.terraform.io/modules/bsrodrigs/fully-connected-vpn/aws/latest"` | no |
+| <a name="input_region"></a> [region](#input\_region) | (Optional) AWS region where the module will be deployed (eg. eu-west-1). | `string` | `"eu-west-1"` | no |
 
 ## Outputs
 
 | Name | Description |
 |------|-------------|
-| <a name="output_blue_vpc"></a> [blue\_vpc](#output\_blue\_vpc) | VPC outputs for blue side. For more details see official documentation from Terraform registry https://registry.terraform.io/modules/terraform-aws-modules/vpc/aws/latest?tab=outputs |
-| <a name="output_green_vpc"></a> [green\_vpc](#output\_green\_vpc) | VPC outputs for green side. For more details see official documentation from Terraform registry https://registry.terraform.io/modules/terraform-aws-modules/vpc/aws/latest?tab=outputs |
+| <a name="output_blue_vpc"></a> [blue\_vpc](#output\_blue\_vpc) | Blue side VPC outputs. For more details see official documentation https://registry.terraform.io/modules/terraform-aws-modules/vpc/aws/latest?tab=outputs |
+| <a name="output_green_vpc"></a> [green\_vpc](#output\_green\_vpc) | Green side VPC outputs. For more details see official documentation https://registry.terraform.io/modules/terraform-aws-modules/vpc/aws/latest?tab=outputs |
 <!-- END_TF_DOCS -->
