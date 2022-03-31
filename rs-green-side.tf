@@ -69,7 +69,7 @@ resource "aws_instance" "green_vpn_inst" {
 
   ami                    = data.aws_ami.green_vpn_inst_ubuntu.id
   instance_type          = var.green_vpn_endpoint_instancetype
-  vpc_security_group_ids = concat([aws_security_group.green_vpn_inst_ipsec.id, aws_security_group.green_vpn_inst_green_traffic.id], try(aws_security_group.green_vpn_inst_ssh[0].id,[]))
+  vpc_security_group_ids = concat([aws_security_group.green_vpn_inst_ipsec.id, aws_security_group.green_vpn_inst_green_traffic.id], tolist(try(aws_security_group.green_vpn_inst_ssh[0].id, []) ))
   subnet_id              = module.green_vpc.public_subnets[0]
   key_name               = var.green_vpn_inst_keyname == "" ? aws_key_pair.green_vpn_inst[0].key_name : var.green_vpn_inst_keyname
   source_dest_check      = "false"
