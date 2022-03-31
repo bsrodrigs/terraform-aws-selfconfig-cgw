@@ -16,24 +16,24 @@ module "blue_vpc" {
   cidr = var.blue_vpc_cidr
 
   azs             = [data.aws_availability_zones.available.names[0]]
-  private_subnets = [cidrsubnet(var.blue_vpc_cidr, 8, 1)]
-  public_subnets  = [cidrsubnet(var.blue_vpc_cidr, 8, 2)]
+  public_subnets  = [cidrsubnet(var.blue_vpc_cidr,  var.blue_public_subnet_size - tonumber(split("/", var.blue_vpc_cidr)[1]), 0)]
+  private_subnets = [cidrsubnet(var.blue_vpc_cidr,  var.blue_private_subnet_size - tonumber(split("/", var.blue_vpc_cidr)[1]), 1)]
 
   enable_vpn_gateway = true
-  amazon_side_asn    = var.blue_asn
+  amazon_side_asn    = tostring(var.blue_asn)
 
   propagate_private_route_tables_vgw = true
   propagate_public_route_tables_vgw  = true
 
   customer_gateways = {
     IP1 = {
-      bgp_asn    = var.green_asn
+      bgp_asn    = tostring(var.green_asn)
       ip_address = aws_eip.green_vpn_inst.public_ip
     }
   }
 
   tags = {
-    project = var.project_label
+    source = var.project_tags
     color   = "blue"
   }
 
@@ -48,7 +48,7 @@ resource "aws_vpn_connection" "blue_vpn" {
   type                = "ipsec.1"
 
   tags = {
-    project = var.project_label
+    source = var.project_tags
     color   = "blue"
   }
 }
