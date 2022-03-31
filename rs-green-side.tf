@@ -16,8 +16,8 @@ module "green_vpc" {
   cidr = var.green_vpc_cidr
 
   azs             = [data.aws_availability_zones.available.names[0]]
-  private_subnets = [cidrsubnet(var.green_vpc_cidr, 8, 1)]
-  public_subnets  = [cidrsubnet(var.green_vpc_cidr, 8, 2)]
+  public_subnets  = [cidrsubnet(var.green_vpc_cidr,  var.green_public_subnet_size - tonumber(split("/", var.green_vpc_cidr)[1]), 1)]
+  private_subnets = [cidrsubnet(var.green_vpc_cidr,  var.green_private_subnet_size - tonumber(split("/", var.green_vpc_cidr)[1]), 2)]
 
   # VPC Flow Logs
   enable_flow_log                      = true
@@ -29,7 +29,7 @@ module "green_vpc" {
   }
 
   tags = {
-    project = var.project_label
+    project = var.project_tags
     color   = "green"
   }
 }
@@ -40,7 +40,7 @@ resource "aws_eip" "green_vpn_inst" {
   vpc = true
 
   tags = {
-    project = var.project_label
+    project = var.project_tags
     color   = "green"
   }
 }
@@ -91,8 +91,8 @@ EOF
 
 
   tags = {
-    Name    = "vpn-instance-1"
-    project = var.project_label
+    Name    = "vpn-inst-1"
+    project = var.project_tags
     color   = "green"
   }
 }
@@ -137,8 +137,8 @@ resource "aws_security_group" "green_vpn_inst_ipsec" {
     cidr_blocks = ["0.0.0.0/0"]
   }
   tags = {
-    Name    = "vpn_endpoint"
-    project = var.project_label
+    Name    = "vpn_inst_ipsec"
+    source = var.project_tags
     color   = "green"
   }
 }
@@ -166,8 +166,8 @@ resource "aws_security_group" "green_vpn_inst_ssh" {
     cidr_blocks = ["0.0.0.0/0"]
   }
   tags = {
-    Name    = "vpn_endpoint"
-    project = var.project_label
+    Name    = "vpn_inst_ssh"
+    source = var.project_tags
     color   = "green"
   }
 }
@@ -178,7 +178,7 @@ resource "aws_security_group" "green_vpn_inst_green_traffic" {
   description = "Allow GREEN VPC Traffic to cross VPN instance"
   vpc_id      = module.green_vpc.vpc_id
   ingress {
-    description = "Allow SSH from specified networks for management"
+    description = "Allow ALL traffic from green to BLUE VPC"
     from_port   = 0
     to_port     = 0
     protocol    = "-1"
@@ -192,8 +192,8 @@ resource "aws_security_group" "green_vpn_inst_green_traffic" {
     cidr_blocks = ["0.0.0.0/0"]
   }
   tags = {
-    Name    = "vpn_endpoint"
-    project = var.project_label
+    Name    = "vpn_inst_greentraffic"
+    source = var.project_tags
     color   = "green"
   }
 }
@@ -209,7 +209,7 @@ resource "aws_key_pair" "green_vpn_inst" {
   public_key = tls_private_key.green_vpn_inst[0].public_key_openssh
 
   tags = {
-    project = var.project_label
+    source = var.project_tags
     color   = "green"
   }
 }
@@ -221,7 +221,7 @@ resource "aws_ssm_parameter" "green_vpn_inst" {
   value = tls_private_key.green_vpn_inst[0].private_key_pem
 
   tags = {
-    project = var.project_label
+    source = var.project_tags
     color   = "green"
   }
 }
