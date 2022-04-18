@@ -1,33 +1,128 @@
-# A fully connected AWS site-to-site VPN with BGP
+#AWS site-to-site VPN with BGP
 
-This module deploys all the resources needed for a fully functional AWS site-to-site connection, a service that connects privately your VPC to your remote networks. This is a common setup to connect your VPC to other cloud providers (Azure, Google Cloud, Oracle Cloud, ...) or to your self-hosted networks (home network, small business network, or a Data Center).
+This module deploys a secure connection between two AWS VPC's, using the [AWS site-to-site VPN](https://docs.aws.amazon.com/vpn/latest/s2svpn/VPC_VPN.html) service on one end, and a standard Ubuntu 20.04 LTS instance as the Customer Gateway (CGW) on the other end. With this reference setup you can easily test scenarios when you need to expose your VPC services hosted in private networks, to any external network that could be either in a different cloud (Azure, Google cloud or Oracle cloud) or in your own facilities (home, office or data center). 
 
-## Features
-- A fully functional AWS site-to-site VPN connection
-- A Customer Gateway (CGW) deployed in a EC2 instance, with IPSec and BGP protocols configured automatically.
-- Licensed software is not used, you only pay for the AWS resources used.
+The setup has two logic sides, the blue represents your AWS VPC where your VPC services are attached to, the green side any external network reachable through the internet. In this setup, the green side is also a VPC in the same account as this is the easiest way for an end-to-end automation. 
+
+![Base configuration](img/overview.png)
 
 
-## Architecture
-This setup is divided in two logical sides, the blue side which is where your AWS resources are and a green side, with your external infrastructure, which will be represented here with a different VPC but it could be any infrastrucutre running the same software.
 
-![Base configuration](img/vpnconnected.png)
+## Key Features
+#### 1. Deploy a site-to-site VPN connection
+Create a self-configured [AWS site-to-site VPN](https://docs.aws.amazon.com/vpn/latest/s2svpn/VPC_VPN.html) between your VPC and a remote location through an IPSec tunnel. 
 
+![VPN Up and Running](img/vpn_up_running.png)
+#### 2. Automate the Customer Gateway configuration
+A self-configured EC2 instance (Ubuntu 20.04 LTS) used as a remote-end for the secure connection established using an IPSec tunnel ([Strongswan software](https://www.strongswan.org/)) and a BGP session to advertise prefixes dynamically ([Quagga software](https://www.quagga.net/)).
+
+**Auto-configured Tunnel Interfaces (green)**
+The VPN instance has two additional interfaces, one for each IPSec tunnel. These tunnels work in an active/standby model.
+![vpn_instance_interfaces](img/vpn_instance_interfaces.png)
+
+**IPSec Up and Running (green)**
+IPSec tunnels established successfully.
+![vpn_instance_ipsec](img/vpn_instance_ipsec.png)
+
+**BGP connection Established (green)**
+BGP sessions established between the two neighbours, routes are being advertised and received.
+![vpn_instance_bgp](img/vpn_instances_bgp.png)
+#### 3. Configure L3 routing
+Access your VPC services from a remote network without exposing them to the internet. Advertise routes dynamically using BGP protocol.
+
+**VPN instance routes (green)**
+Private networks hosted in the blue side are reachable from the VPN instance through the tunnel interface. 
+![vpn_instance_routes](img/vpn_instance_routes.png)
+
+**AWS private subnet routes (blue)**
+Private networks hosted in the green side are reachable through the Virtual Private Gateway (VPG). These routes are propagated from VPG and advertised by BGP. 
+
+![blue_private_subnet_routes](img/blue_private_subnet_routes.png)
+
+### Disclaimer
+
+This module is a reference implementation for testing purposes and is NOT intended for a production environment. By using it you are at your own risk.
+
+For a production setup, I strongly recommend to read [Amazon Virtual Private Cloud Connectivity Options](https://docs.aws.amazon.com/whitepapers/latest/aws-vpc-connectivity-options/welcome.html) from where you can take all the insights you need to design an scalable, highly-available and secure architecture.
 
 ## Usage
 
-Before deploy this module make sure you are authenticated in your AWS account [docs](https://registry.terraform.io/providers/hashicorp/aws/latest/docs#authentication-and-configuration).
-### Basic setup
-A fully functional VPN connection (no input variables needed)
-```HCL
-module "my_vpn_setup" {
-    source  = "aws-terraform-fullyconnectedvpn"
-    version = "1.0.0"
+This module can be deployed without any input parameter by setting the pre-defined values in all input parameters (see inputs docs).
+#### Basic setup
 
-    # insert the 9 optional variables
-}
 ```
 
+  module "my_vpn_setup" {
+
+    source  = "aws-terraform-fullyconnectedvpn"
+    version = "1.0.5"
+
+    # insert the 12 optional variables
+
+  }
+```
+#### Access CGW with a self-managed key pair
+
+```
+
+  module "my_vpn_setup" {
+
+    source  = "aws-terraform-fullyconnectedvpn"
+    version = "1.0.5"
+
+    green_vpn_inst_keyname              = my-existing-keypair
+    green_vpn_inst_allowed_networks_ssh = ["108.34.76.23/32", ...] # SSH sessions will be blocked if source IP is not set
+
+  }
+```
+#### Customer Gateway with an auto-generated key pair
+
+Do not define the input variable `green_vpn_inst_keyname` if you prefer to have an auto-generated key pair.
+
+```
+
+  module "my_vpn_setup" {
+
+    source  = "aws-terraform-fullyconnectedvpn"
+    version = "1.0.5"
+
+    green_vpn_inst_allowed_networks_ssh = ["108.34.76.23/32", ...] # SSH won't be possible if source IP is not set
+
+  }
+```
+To access the VPN instance, use the private key securely stored in AWS Systems Manager parameter store.
+
+![AWS Systems Manager - parameter store](img/ssm_pkey.png)
+
+Read this page if you're not familiar on how to [Connect to your Linux instance using SSH](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/AccessingInstancesLinux.html).
+
+#### Define custom network parameters
+
+```HCL
+module "my_vpn_setup" {
+
+    source  = "aws-terraform-fullyconnectedvpn"
+    version = "1.0.5"
+
+    # blue side input params
+    blue_vpc_cidr               = "172.17.0.0/16" 
+    blue_asn                    = "64620"
+    blue_public_subnet_size     = 20 
+    blue_private_subnet_size    = 20
+
+    # green side input params
+    green_vpc_cidr              = "172.16.0.0/16" 
+    green_asn                   = "65220"
+    green_public_subnet_size    = 24
+    green_private_subnet_size   = 24
+
+}
+```
+This module deploys a public and a private subnets on both sides. The public subnet always uses the first block from VPC address space with the specified size for the public subnet. The private subnet always uses the second block from VPC address space with the specified size for the private subnet.
+
+![Network](img/network.png)
+
+You can create more subnets using your own resources or modules by attaching them to the blue or green VPC. To get their ids see output documentation.
 
 <!-- BEGIN_TF_DOCS -->
 ## Requirements
