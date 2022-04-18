@@ -1,4 +1,4 @@
-#AWS site-to-site VPN with BGP
+# AWS site-to-site VPN with BGP
 
 This module deploys a secure connection between two AWS VPC's, using the [AWS site-to-site VPN](https://docs.aws.amazon.com/vpn/latest/s2svpn/VPC_VPN.html) service on one end, and a standard Ubuntu 20.04 LTS instance as the Customer Gateway (CGW) on the other end. With this reference setup you can easily test scenarios when you need to expose your VPC services hosted in private networks, to any external network that could be either in a different cloud (Azure, Google cloud or Oracle cloud) or in your own facilities (home, office or data center). 
 
